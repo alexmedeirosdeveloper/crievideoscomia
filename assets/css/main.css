@@ -616,7 +616,6 @@ section,
   display: flex;
   align-items: center;
   overflow: hidden;
-  padding-bottom: 80px;
 }
 
 .hero::before {
@@ -2588,7 +2587,6 @@ section,
 }
 
 .faq .faq-sidebar .faq-image {
-  margin-bottom: 30px;
   border-radius: 14px;
   overflow: hidden;
 }
