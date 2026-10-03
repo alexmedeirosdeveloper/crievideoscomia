@@ -1,0 +1,62 @@
+[
+  {
+    "url": "https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css",
+    "file": "assets/vendor/bootstrap.min.css",
+    "bytes": 232111,
+    "ok": true
+  },
+  {
+    "url": "https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js",
+    "file": "assets/vendor/bootstrap.bundle.min.js",
+    "bytes": 80496,
+    "ok": true
+  },
+  {
+    "url": "https://files.manuscdn.com/user_upload_by_module/session_file/310419663028866908/saqxACZztjPOsMFw.mp4",
+    "file": "assets/video/demo-01.mp4",
+    "bytes": 13045737,
+    "ok": true
+  },
+  {
+    "url": "https://files.manuscdn.com/user_upload_by_module/session_file/310419663028866908/NYfMDBLBhjJETgUv.mp4",
+    "file": "assets/video/demo-02.mp4",
+    "bytes": 32322039,
+    "ok": true
+  },
+  {
+    "url": "https://files.manuscdn.com/user_upload_by_module/session_file/310419663028866908/KXwRheBTyfYCKTgX.mp4",
+    "file": "assets/video/demo-03.mp4",
+    "bytes": 5339156,
+    "ok": true
+  },
+  {
+    "url": "https://files.manuscdn.com/user_upload_by_module/session_file/310419663028866908/xPrrqmiAIEFoYYtO.mp4",
+    "file": "assets/video/demo-04.mp4",
+    "bytes": 39244029,
+    "ok": true
+  },
+  {
+    "url": "https://files.manuscdn.com/user_upload_by_module/session_file/310419663028866908/VJwZQNbBEnOsGeUj.mp4",
+    "file": "assets/video/demo-05.mp4",
+    "bytes": 11487449,
+    "ok": true
+  },
+  {
+    "url": "https://files.manuscdn.com/user_upload_by_module/session_file/310419663028866908/lpWkemkEMjkKPXSF.MP4",
+    "file": "assets/video/demo-06.mp4",
+    "bytes": 24634493,
+    "ok": true
+  },
+  {
+    "url": "https://files.manuscdn.com/user_upload_by_module/session_file/310419663028866908/dyqHecaMvNdgBvCs.mp4",
+    "file": "assets/video/demo-07.mp4",
+    "bytes": 2363536,
+    "ok": true
+  },
+  {
+    "url": "https://files.manuscdn.com/user_upload_by_module/session_file/310419663028866908/uSGxEnizMxroDzhs.mp4",
+    "file": "assets/video/demo-08.mp4",
+    "bytes": 24814428,
+    "ok": true
+  }
+]
