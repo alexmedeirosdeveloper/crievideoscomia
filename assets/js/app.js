@@ -1,105 +1,19 @@
 'use strict';
-(() => {
-  const config = window.LANDING_CONFIG || {};
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const behavior = () => reducedMotion.matches ? 'instant' : 'smooth';
-
-  // Horizontal galleries work with native touch scrolling, keyboard and arrows.
-  document.querySelectorAll('[data-rail]').forEach(button => {
-    button.addEventListener('click', () => {
-      const rail = document.getElementById(button.dataset.rail);
-      if (rail) rail.scrollBy({left: Number(button.dataset.direction) * Math.max(240, rail.clientWidth * .8), behavior: behavior()});
-    });
-  });
-  document.querySelectorAll('.media-rail').forEach(rail => {
-    rail.addEventListener('keydown', event => {
-      if (event.target !== rail || !['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
-      event.preventDefault();
-      rail.scrollBy({left: event.key === 'ArrowRight' ? 260 : -260, behavior: behavior()});
-    });
-  });
-
-  // Native modal dialogs provide Escape, focus containment and restoration.
-  document.querySelectorAll('dialog').forEach(dialog => {
-    dialog.querySelectorAll('.dialog-close, [data-close-dialog]').forEach(button => button.addEventListener('click', () => dialog.close()));
-    dialog.addEventListener('click', event => {
-      const rect = dialog.getBoundingClientRect();
-      if (event.target === dialog && (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom)) dialog.close();
-    });
-  });
-  const lightbox = document.getElementById('image-dialog');
-  document.querySelectorAll('[data-lightbox]').forEach(button => {
-    button.addEventListener('click', () => {
-      lightbox.querySelector('img').src = button.dataset.lightbox;
-      lightbox.showModal();
-    });
-  });
-
-  // Demos are local and requested only when the visitor presses play.
-  const demos = [...document.querySelectorAll('.demo-frame video')];
-  demos.forEach(video => video.addEventListener('play', () => demos.forEach(other => {if (other !== video) other.pause();})));
-  if ('IntersectionObserver' in window) {
-    const observer = new IntersectionObserver(entries => entries.forEach(entry => {if (!entry.isIntersecting) entry.target.pause();}), {threshold: .05});
-    demos.forEach(video => observer.observe(video));
-  }
-
-  // Original presentation streamed on demand using native HLS or Hls.js.
-  const playButton = document.getElementById('load-player');
-  playButton?.addEventListener('click', () => {
-    demos.forEach(video => video.pause());
-    const host = document.getElementById('hero-player');
-    const status = document.getElementById('player-status');
-    const video = document.createElement('video');
-
-    video.poster = 'assets/img/hero-cover.jpg';
-    video.controls = true;
-    video.playsInline = true;
-    video.setAttribute('aria-label', 'Apresentação original da IA Academy');
-    host.replaceChildren(video);
-    host.classList.add('player-active');
-    const fail = () => {
-      status.textContent = 'Não foi possível carregar o vídeo. Tente novamente.';
-      host.replaceChildren(playButton);
-      host.classList.remove('player-active');
-    };
-    let hls;
-    video.addEventListener('error', () => {if(hls) hls.destroy(); fail();}, {once: true});
-    video.addEventListener('playing', () => {status.textContent = '';});
-    const url = 'https://cdn.converteai.net/4c00b079-2ae9-46b7-b111-a0b4e06e709e/6a8650d840801af9c22c9c33/main.m3u8';
-    const start = () => video.play().catch(() => {status.textContent = 'Toque no botão de reprodução para assistir.';});
-    if (video.canPlayType('application/vnd.apple.mpegurl')) {video.src = url;start();}
-    else if (window.Hls && Hls.isSupported()) {
-      hls = new Hls(); hls.loadSource(url); hls.attachMedia(video);
-      hls.on(Hls.Events.MANIFEST_PARSED, start);
-      hls.on(Hls.Events.ERROR, (_, data) => {if (data.fatal) {hls.destroy();fail();}});
-    } else {fail();}
-  });
-
-  document.querySelectorAll('[data-checkout]').forEach(button => {
-    button.addEventListener('click', () => {
-      let destination;
-      try {destination = new URL(config.affiliateUrl);} catch {destination = null;}
-      if (!destination || destination.protocol !== 'https:') {
-        document.getElementById('checkout-dialog').showModal();
-        return;
-      }
-      // Preserve the affiliate URL exactly; no unrequested parameter rewriting.
-      window.location.assign(destination.href);
-    });
-  });
-
-  // Mobile offer link appears only after the opening and hides over the offer itself.
-  const mobileBar = document.getElementById('mobile-offer');
-  const hero = document.getElementById('inicio');
-  const offer = document.getElementById('oferta');
-  let scheduled = false;
-  const updateMobileBar = () => {
-    const offerRect = offer.getBoundingClientRect();
-    mobileBar.hidden = window.innerWidth >= 992 || hero.getBoundingClientRect().bottom > 90 || (offerRect.top < window.innerHeight && offerRect.bottom > 0);
-    scheduled = false;
-  };
-  const schedule = () => {if (!scheduled) {scheduled = true; requestAnimationFrame(updateMobileBar);}};
-  addEventListener('scroll', schedule, {passive: true});
-  addEventListener('resize', schedule, {passive: true});
-  updateMobileBar();
+(()=>{
+ const q=(s)=>document.querySelector(s), all=(s)=>[...document.querySelectorAll(s)];
+ const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+ all('[data-rail]').forEach(b=>b.addEventListener('click',()=>{const r=document.getElementById(b.dataset.rail);r?.scrollBy({left:Number(b.dataset.dir)*r.clientWidth*.85,behavior:reduce?'auto':'smooth'});}));
+ all('.rail').forEach(r=>r.addEventListener('keydown',e=>{if(e.target===r&&['ArrowLeft','ArrowRight'].includes(e.key)){e.preventDefault();r.scrollBy({left:(e.key==='ArrowLeft'?-1:1)*r.clientWidth*.75,behavior:reduce?'auto':'smooth'});}}));
+ const dialog=q('#image-dialog');all('[data-lightbox]').forEach(b=>b.addEventListener('click',()=>{dialog.querySelector('img').src=b.dataset.lightbox;dialog.showModal();}));q('.dialog-close').addEventListener('click',()=>dialog.close());dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close();});
+ const videos=()=>all('video');function pauseOthers(v){videos().forEach(o=>{if(o!==v)o.pause();});}
+ all('.demo-play').forEach(b=>{const v=b.parentElement.querySelector('video'), err=b.parentElement.querySelector('.video-error');v.addEventListener('play',()=>pauseOthers(v));v.addEventListener('error',()=>{err.hidden=false;b.hidden=false;v.removeAttribute('src');});b.addEventListener('click',()=>{err.hidden=true;b.hidden=true;v.src=v.dataset.src;v.play().catch(()=>{});});});
+ const host=q('#hero-player'), play=q('#load-player'), status=q('#player-status');let hls=null;
+ function loadHls(){return new Promise((resolve,reject)=>{if(window.Hls)return resolve(window.Hls);const script=document.createElement('script');script.src='assets/vendor/hls.min.js';script.onload=()=>resolve(window.Hls);script.onerror=reject;document.head.append(script);});}
+ play.addEventListener('click',async()=>{pauseOthers(null);status.textContent='Carregando apresentação…';const v=document.createElement('video');v.controls=true;v.playsInline=true;v.poster='assets/img/hero-cover.webp';v.setAttribute('aria-label','Apresentação original da IA Academy');host.replaceChildren(v);let failed=false;const fail=()=>{if(failed)return;failed=true;hls?.destroy();hls=null;status.textContent='Não foi possível carregar a apresentação. Tente novamente ou explore as demonstrações abaixo.';host.replaceChildren(play);};v.addEventListener('error',fail,{once:true});v.addEventListener('play',()=>{pauseOthers(v);status.textContent='';});const start=()=>v.play().catch(()=>{if(!failed)status.textContent='Toque em reproduzir para assistir.';});try{const url=window.LANDING_CONFIG.presentationUrl;if(v.canPlayType('application/vnd.apple.mpegurl')){v.src=url;start();}else{const H=await loadHls();if(!H?.isSupported())return fail();hls=new H();hls.loadSource(url);hls.attachMedia(v);hls.on(H.Events.MANIFEST_PARSED,start);hls.on(H.Events.ERROR,(_,d)=>{if(d.fatal)fail();});}}catch{fail();}});
+ if('IntersectionObserver'in window){const io=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)e.target.pause();}),{threshold:.05});all('.demo video').forEach(v=>io.observe(v));}
+ const bar=q('#mobile-offer'), hero=q('.hero-action .buy'), offer=q('#oferta .buy');let scheduled=false;function update(){const r=offer.getBoundingClientRect();bar.hidden=innerWidth>=992||hero.getBoundingClientRect().bottom>0||(r.top<innerHeight&&r.bottom>0);scheduled=false;}function schedule(){if(!scheduled){scheduled=true;requestAnimationFrame(update);}}addEventListener('scroll',schedule,{passive:true});addEventListener('resize',schedule,{passive:true});update();
+ // Marketing scripts only after optional consent. CTA links work independently.
+ const cookie=q('#cookie-banner');let consent=null;try{consent=localStorage.getItem('ia-marketing-consent');}catch{}let pixelLoaded=false;function pixel(){if(pixelLoaded)return;pixelLoaded=true;!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments);};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=true;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=true;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s);}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('consent','grant');fbq('init',window.LANDING_CONFIG.pixelId);fbq('track','PageView');}
+ function setConsent(v){consent=v;try{localStorage.setItem('ia-marketing-consent',v);}catch{}cookie.hidden=true;if(v==='yes'){if(pixelLoaded)window.fbq?.('consent','grant');else pixel();}else if(pixelLoaded)window.fbq?.('consent','revoke');}q('#cookie-yes').addEventListener('click',()=>setConsent('yes'));q('#cookie-no').addEventListener('click',()=>setConsent('no'));q('#cookie-settings').addEventListener('click',()=>{cookie.hidden=false;});if(consent==='yes')pixel();else if(consent!=='no')cookie.hidden=false;
+ all('[data-cta]').forEach(a=>a.addEventListener('click',()=>{if(consent==='yes'&&window.fbq)fbq('trackCustom','CheckoutClick',{content_name:'IA Academy',cta_position:a.dataset.cta,currency:'BRL',value:97});}));
 })();

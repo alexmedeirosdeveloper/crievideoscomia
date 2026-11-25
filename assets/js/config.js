@@ -1,5 +1,1 @@
-/* Insira o link real da afiliação antes de publicar. Vazio = compra não habilitada.
- * Nenhum checkout genérico é utilizado como fallback. */
-window.LANDING_CONFIG = Object.freeze({
-  affiliateUrl: 'https://pay.cakto.com.br/vtw4ozj_670334?affiliate=EnCqWUXU'
-});
+window.LANDING_CONFIG=Object.freeze({affiliateUrl:'https://pay.cakto.com.br/vtw4ozj_670334?affiliate=EnCqWUXU',pixelId:'1457508833112937',presentationUrl:'https://cdn.converteai.net/4c00b079-2ae9-46b7-b111-a0b4e06e709e/6a8650d840801af9c22c9c33/main.m3u8'});
